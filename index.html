@@ -1,82 +1,86 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Feliz Primer Mes ❤️</title>
+  <meta charset="utf-8">
+  <title>Para mi amor</title>
   <style>
-    body {
-      background: linear-gradient(to right, #ff9a9e, #fad0c4);
-      font-family: 'Segoe UI', sans-serif;
-      text-align: center;
-      padding: 50px;
-      color: #333;
-    }
-    h1 {
-      font-size: 3em;
-      color: #e63946;
-      animation: aparecer 3s ease-in-out;
-    }
-    p {
-      font-size: 1.3em;
-      margin: 20px auto;
-      max-width: 600px;
-      line-height: 1.6;
-      animation: aparecer 5s ease-in-out;
-    }
-    .corazon {
-      font-size: 5em;
-      animation: latido 1s infinite;
-    }
-    @keyframes latido {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.2); }
-      100% { transform: scale(1); }
-    }
-    @keyframes aparecer {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    button {
-      margin-top: 30px;
-      padding: 12px 25px;
-      background-color: #e63946;
-      border: none;
-      border-radius: 8px;
-      color: white;
-      font-size: 1em;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    button:hover {
-      background-color: #d62839;
-    }
+    body { font-family: 'Georgia', serif; text-align:center; background:#ffe6f0; padding:50px; }
+    #title { color:#d63384; transition: opacity 400ms; }
+    #intro { font-size:18px; color:#333; transition: opacity 400ms; }
+    #start { margin-top:20px; padding:12px 25px; font-size:16px; background:#d63384; color:white; border:none; border-radius:8px; cursor:pointer; transition: opacity 400ms; }
+    #lyrics { margin-top:30px; font-size:18px; white-space:pre-wrap; color:#222; min-height:120px; display:none; }
+    #loader { display:none; margin-top:10px; color:#555; }
   </style>
 </head>
 <body>
-  <h1>💖 Feliz Primer Mes 💖</h1>
-  <div class="corazon">❤️</div>
-  <p>
-    Amor, hoy celebramos nuestro primer mes juntos,  
-    y quiero agradecerte por tu compañía, tu cariño y por hacerme tan feliz.  
-    Este tiempo contigo me ha enseñado lo especial que eres en mi vida,  
-    y lo afortunado que soy de tenerte a mi lado.  
+  <!-- Texto inicial -->
+  <h1 id="title">💖 Para mi amor 💖</h1>
+  <p id="intro">
+    Hoy cumplimos nuestro primer mes juntos, y quiero decirte que estos días a tu lado han sido los más especiales de mi vida.  
+    Gracias por tu amor, tu compañía y cada sonrisa que me regalas. 💕
   </p>
-  <p>
-    Ojalá este sea el primero de muchos meses,  
-    recuerdos y sonrisas compartidas.  
-    ¡Te amo mucho! 💕
-  </p>
-  
-  <button onclick="tocarCancion()">Haz clic aquí</button>
+  <button id="start">Haz clic aquí</button>
+  <div id="loader">Cargando...</div>
 
-  <audio id="miCancion" src="cancion.mp3"></audio>
+  <!-- Música -->
+  <audio id="miAudio" src="limon-y-sal.mp3" preload="auto"></audio>
+
+  <!-- Aquí aparecerá la letra -->
+  <div id="lyrics" aria-live="polite"></div>
 
   <script>
-    function tocarCancion() {
-      const audio = document.getElementById("miCancion");
-      audio.play();
-      alert("Siempre estaré contigo ❤️");
-    }
+    (function () {
+      const btn = document.getElementById('start');
+      const title = document.getElementById('title');
+      const intro = document.getElementById('intro');
+      const audio = document.getElementById('miAudio');
+      const lyricsDiv = document.getElementById('lyrics');
+      const loader = document.getElementById('loader');
+
+      // 👉 Aquí pones la letra de la canción (o un fragmento especial)
+      const letra = `Me gusta estar contigo
+Y no me importa lo que digan
+Porque aunque no siempre lo demuestre
+Te quiero tal como eres 💖`;
+
+      const velocidad = 60; // ms por carácter
+
+      btn.addEventListener('click', async function () {
+        btn.disabled = true;
+        loader.style.display = 'block';
+
+        title.style.opacity = '0';
+        intro.style.opacity = '0';
+        btn.style.opacity = '0';
+
+        setTimeout(() => {
+          title.style.display = 'none';
+          intro.style.display = 'none';
+          btn.style.display = 'none';
+        }, 420);
+
+        try {
+          await audio.play();
+        } catch (err) {
+          loader.style.display = 'none';
+          alert('Toca de nuevo el botón para reproducir la canción 🎶');
+          return;
+        }
+
+        loader.style.display = 'none';
+        lyricsDiv.textContent = '';
+        lyricsDiv.style.display = 'block';
+
+        let i = 0;
+        (function escribir() {
+          if (i < letra.length) {
+            lyricsDiv.textContent += letra.charAt(i);
+            i++;
+            setTimeout(escribir, velocidad);
+          }
+        })();
+      });
+    })();
   </script>
 </body>
 </html>
